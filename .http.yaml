@@ -1,0 +1,35 @@
+version: '3'
+
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+server:
+  command: php public/index.php
+  env:
+    - APP_RUNTIME: App\Runtime\ConsumerRuntime
+  relay: pipes
+
+http:
+  address: 0.0.0.0:8080
+
+  pool:
+    num_workers: 2
+    supervisor:
+      max_worker_memory: 300
+
+kafka:
+  brokers:
+    - 172.19.0.2:9092
+
+jobs:
+  # воркеры все равно необходимы даже если мы их не будем использовать
+  # поэтому в конфигурации мы отключили консумеры и установили значение debug = true,
+  # чтобы воркеры работали по модели умирающих процессов
+  pool:
+    debug: true
+  pipelines:
+    test:
+      driver: kafka
+      config:
+        priority: 2
+        auto_create_topics_enable: true

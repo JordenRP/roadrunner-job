@@ -1,0 +1,30 @@
+version: '3'
+
+server:
+  command: php public/index.php
+  env:
+    - APP_RUNTIME: App\Runtime\ConsumerRuntime
+  relay: pipes
+
+kafka:
+  brokers:
+    - 172.19.0.2:9092
+
+jobs:
+#  обязательный параметр для запуска консюминга
+  consume: ['test']
+  pool:
+    num_workers: 2
+  pipelines:
+    test:
+      driver: kafka
+      config:
+        priority: 1
+        consumer_options:
+          consumer_offset:
+            type: AtEnd
+            # При указании типа оффсет, который не зависит от времени передаем 0
+            value: 0
+          # Обязательно нужно указать топик
+          topics: [ "test" ]
+

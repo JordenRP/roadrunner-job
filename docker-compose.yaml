@@ -41,3 +41,26 @@ services:
     environment:
       - KAFKA_CLUSTERS_0_NAME=kafka
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    ports:
+      - 9090:9090
+    volumes:
+      - ./docker/prometheus:/etc/prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./docker/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./docker/grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./docker/grafana/json:/etc/dashboards
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GR_ORG_NAME=1

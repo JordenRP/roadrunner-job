@@ -19,7 +19,7 @@ http:
 
 kafka:
   brokers:
-    - 172.19.0.2:9092
+    - 172.19.0.3:9092
 
 jobs:
   # воркеры все равно необходимы даже если мы их не будем использовать
@@ -33,3 +33,6 @@ jobs:
       config:
         priority: 2
         auto_create_topics_enable: true
+
+metrics:
+  address: "0.0.0.0:2112"
